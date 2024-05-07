@@ -6,46 +6,47 @@ import axios from "axios";
 
 function OrderSummary() {
   const cartItemTotalPrice = useAppSelector(selectCartTotalPrice);
-   const [isPending, setIsPending] = useState(false);
-   
+  const [isPending, setIsPending] = useState(false);
 
- const generatePaymentLink = async (cartItemTotalPrice: number ) => {
-   setIsPending(true);
+  const generatePaymentLink = async (cartItemTotalPrice: number) => {
+    setIsPending(true);
 
-   try {
-     // Convert amount to kobo
+    try {
+      // Convert amount to kobo
       const amountInKobo = cartItemTotalPrice * 100;
-      
 
-     const response = await axios.post(
-       `https://api.paystack.co/transaction/initialize`,
-       {
-         amount: amountInKobo,
-         email: "sample@gmail.com",
-         callback_url: "http://localhost:3000",
-       },
-       {
-         headers: {
-           Authorization: `Bearer ${process.env.REACT_APP_PAYSTACK_SECRET_KEY}`,
-         },
-       }
-     );
+      const response = await axios.post(
+        `https://api.paystack.co/transaction/initialize`,
+        {
+          amount: amountInKobo,
+          email: "sample@gmail.com",
+          callback_url: "http://localhost:3000",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.REACT_APP_PAYSTACK_SECRET_KEY}`,
+          },
+        }
+      );
 
-     if (response.data && response.data.data.authorization_url) {
-       window.open(response.data.data.authorization_url, "_blank");
+      if (response.data && response.data.data.authorization_url) {
+        window.open(response.data.data.authorization_url, "_blank");
+      }
+    } catch (error) {
+      console.error("Error generating link: ", error);
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+   const handleSubmit = () => {
+     if (typeof cartItemTotalPrice === "number") {
+       generatePaymentLink(cartItemTotalPrice);
+     } else {
+       console.error("cartItemTotalPrice is not a valid number.");
      }
-   } catch (error) {
-     console.error("Error generating link: ", error);
-   } finally {
-     setIsPending(false);
-   }
- };
+   };
 
-
-const handleSubmit = (cartItemTotalPrice: number) => {
-  generatePaymentLink(cartItemTotalPrice);
-};
-   
   return (
     <div className="md:w-[26%]  sticky top-[10vh] h-fit">
       <h1 className="bg-gray-200 font-bold text-xl py-4 border-b border-b-gray-300 px-4 text-gray-500">
@@ -85,4 +86,5 @@ const handleSubmit = (cartItemTotalPrice: number) => {
     </div>
   );
 }
+
 export default OrderSummary;
