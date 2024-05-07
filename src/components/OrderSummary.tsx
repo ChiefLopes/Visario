@@ -9,21 +9,13 @@ function OrderSummary() {
    const [isPending, setIsPending] = useState(false);
    
 
-<<<<<<< HEAD
- const generatePaymentLink = async (cartItemTotalPrice) => {
-=======
  const generatePaymentLink = async (cartItemTotalPrice: number ) => {
->>>>>>> f5432bf (all files)
    setIsPending(true);
 
    try {
      // Convert amount to kobo
-<<<<<<< HEAD
-     const amountInKobo = cartItemTotalPrice * 100;
-=======
       const amountInKobo = cartItemTotalPrice * 100;
       
->>>>>>> f5432bf (all files)
 
      const response = await axios.post(
        `https://api.paystack.co/transaction/initialize`,
